@@ -9,6 +9,8 @@ spec:
   params:
   - name: repo-url
     type: string
+  - name: image-reference
+    type: string
   workspaces:
   - name: shared-data
   tasks:
@@ -21,3 +23,13 @@ spec:
     params:
     - name: url
       value: $(params.repo-url)
+  - name: build-push
+    runAfter: ["fetch-source"]
+    taskRef:
+      name: kaniko
+    workspaces:
+    - name: source
+      workspace: shared-data
+    params:
+    - name: IMAGE
+      value: $(params.image-reference)
