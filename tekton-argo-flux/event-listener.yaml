@@ -1,0 +1,25 @@
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: clone-build-push-eventlistener
+spec:
+  serviceAccountName: tekton-sa
+  triggers:
+    - name: clone-build-push-trigger
+      interceptors:
+        - ref:
+            name: "github"el-clone-build-push-eventlistener
+            kind: ClusterInterceptor
+            apiVersion: triggers.tekton.dev
+          params:
+          - name: "secretRef"
+            value:
+              secretName: github-secret
+              secretKey: secretToken
+          - name: "eventTypes"
+            value: ["pull_request"]
+      bindings:
+      - ref: clone-build-push-trigger-binding
+      template:
+        ref: clone-build-push-trigger-template

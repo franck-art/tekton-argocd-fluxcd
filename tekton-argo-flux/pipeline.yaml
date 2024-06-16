@@ -11,8 +11,13 @@ spec:
     type: string
   - name: image-reference
     type: string
+  - name: tag-image
+    type: string
+  - name: dockerfile
+    type: string
   workspaces:
   - name: shared-data
+  - name: docker-credentials
   tasks:
   - name: fetch-source
     taskRef:
@@ -30,6 +35,10 @@ spec:
     workspaces:
     - name: source
       workspace: shared-data
+    - name: dockerconfig
+      workspace: docker-credentials
     params:
     - name: IMAGE
-      value: $(params.image-reference)
+      value: $(params.image-reference):$(params.tag-image)
+    - name: DOCKERFILE
+      value: $(params.dockerfile)
