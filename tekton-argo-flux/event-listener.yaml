@@ -10,8 +10,6 @@ spec:
       interceptors:
         - ref:
             name: "github-el-clone-build-push-eventlistener"
-            kind: ClusterInterceptor
-            apiVersion: triggers.tekton.dev
           params:
           - name: "secretRef"
             value:
