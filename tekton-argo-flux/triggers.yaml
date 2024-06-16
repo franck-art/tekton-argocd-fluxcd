@@ -1,0 +1,52 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: clone-build-push-trigger-template
+spec:
+  params:
+  - name: tag-image
+    default: "latest"
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: clone-build-push-run-
+    spec:
+      pipelineRef:
+        name: clone-build-push
+      podTemplate:
+        securityContext:
+          fsGroup: 65532
+      workspaces:
+      - name: shared-data
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+      - name: docker-credentials
+        secret:
+          secretName: docker-credentials
+      serviceAccountName: tekton-sa
+      params:
+      - name: repo-url
+        value: https://github.com/franck-art/tekton-argocd-fluxcd.git
+      - name: image-reference
+        value: europe-west1-docker.pkg.dev/poc-franck/hello-tekton-image/tekton-hello
+      - name: tag-image
+        value: $(tt.params.tag-image)
+      - name: dockerfile
+        value: ./tekton-argo-flux/hello/Dockerfile
+
+--- 
+
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: clone-build-push-trigger-binding
+spec: 
+  params:
+  - name: tag-image
+    value: $(body.tag-image)

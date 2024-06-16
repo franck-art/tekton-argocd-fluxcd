@@ -1,0 +1,33 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-build-push-run-
+spec:
+  pipelineRef:
+    name: clone-build-push
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  serviceAccountName: tekton-sa
+  params:
+  - name: repo-url
+    value: https://github.com/franck-art/tekton-pipeline.git
+  - name: image-reference
+    value: europe-west1-docker.pkg.dev/poc-franck/hello-tekton-image/tekton-hello
+  - name: tag-image
+    value: latest
+  - name: dockerfile
+    value: ./tekton_ci-project/hello/Dockerfile
