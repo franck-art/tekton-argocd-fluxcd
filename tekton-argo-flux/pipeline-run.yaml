@@ -24,7 +24,7 @@ spec:
   serviceAccountName: tekton-sa
   params:
   - name: repo-url
-    value: https://github.com/franck-art/tekton-pipeline.git
+    value: https://github.com/franck-art/tekton-argocd-fluxcd.git
   - name: image-reference
     value: europe-west1-docker.pkg.dev/poc-franck/hello-tekton-image/tekton-hello
   - name: tag-image
