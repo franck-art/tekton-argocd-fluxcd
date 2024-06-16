@@ -9,7 +9,7 @@ spec:
     - name: clone-build-push-trigger
       interceptors:
         - ref:
-            name: "github"el-clone-build-push-eventlistener
+            name: "github-el-clone-build-push-eventlistener"
             kind: ClusterInterceptor
             apiVersion: triggers.tekton.dev
           params:
@@ -18,7 +18,7 @@ spec:
               secretName: github-secret
               secretKey: secretToken
           - name: "eventTypes"
-            value: ["pull_request"]
+            value: ["push"]
       bindings:
       - ref: clone-build-push-trigger-binding
       template:

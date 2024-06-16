@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
   - name: tag-image
-    default: "latest"
+    default: "test"
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
@@ -49,4 +49,4 @@ metadata:
 spec: 
   params:
   - name: tag-image
-    value: $(body.body.pull_request.head.sha)
+    value: $(body.pull_request.head.sha)
