@@ -49,4 +49,4 @@ metadata:
 spec: 
   params:
   - name: tag-image
-    value: $(body.tag-image)
+    value: $(body.body.pull_request.head.sha)
