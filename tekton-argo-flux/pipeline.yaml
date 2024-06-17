@@ -39,6 +39,6 @@ spec:
       workspace: docker-credentials
     params:
     - name: IMAGE
-      value: $(params.image-reference):$(params.tag-image)
+      value: $(params.image-reference):test-1
     - name: DOCKERFILE
       value: $(params.dockerfile)
