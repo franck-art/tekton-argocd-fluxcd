@@ -11,12 +11,8 @@ spec:
         - ref:
             name: "github"
           params:
-          - name: "secretRef"
-            value:
-              secretName: github-secret
-              secretKey: secretToken
           - name: "eventTypes"
-            value: ["push"]
+            value: ["push","pull_request"]
       bindings:
       - ref: clone-build-push-trigger-binding
       template:
