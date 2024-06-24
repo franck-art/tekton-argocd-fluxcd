@@ -10,6 +10,16 @@ metadata:
     tekton.dev/tags: deploy
     tekton.dev/displayName: "argocd"
     tekton.dev/platforms: "linux/amd64"
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/role: "tekton-argocd"
+    vault.hashicorp.com/agent-inject-secret-config: "secret/data/platform/argocd"
+    # Environment variable export template
+    vault.hashicorp.com/agent-inject-template-config: |
+      {{- with secret "secret/data/platform/argocd" -}}
+        export ARGOCD_PASSWORD="{{ .Data.data.ARGOCD_PASSWORD }}"
+        export ARGOCD_USERNAME="{{ .Data.data.ARGOCD_USERNAME }}"
+        export ARGOCD_SERVER="{{ .Data.data.ARGOCD_SERVER }}"
+      {{- end }}
 spec:
   description: >-
     This task syncs (deploys) an Argo CD application and waits for it to be healthy.
@@ -40,19 +50,6 @@ spec:
     #       name: argocd-env-configmap  # used for server address
     #   - secretRef:
     #       name: argocd-env-secret  # used for authentication (username/password or auth token)
-    serviceAccountName: tekton-sa
-    annotations:
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "tekton-argocd"
-        vault.hashicorp.com/agent-inject-secret-config: "secret/data/platform/argocd"
-        # Environment variable export template
-        vault.hashicorp.com/agent-inject-template-config: |
-          {{- with secret "secret/data/platform/argocd" -}}
-            export ARGOCD_PASSWORD="{{ .Data.data.ARGOCD_PASSWORD }}"
-            export ARGOCD_USERNAME="{{ .Data.data.ARGOCD_USERNAME }}"
-            export ARGOCD_SERVER="{{ .Data.data.ARGOCD_SERVER }}"
-          {{- end }}
-
 
   steps:
     - name: login
