@@ -17,21 +17,17 @@ spec:
       podTemplate:
         securityContext:
           fsGroup: 65532
-      resources:
-          - name: source
-            resourceSpec:
-              type: git
-              params:
-                - name: repo-url
-                  value: https://github.com/franck-art/tekton-argocd-fluxcd.git
-                - name: image-reference
-                  value: europe-west1-docker.pkg.dev/poc-franck/hello-tekton-image/tekton-hello
-                - name: tag-image
-                  value: $(tt.params.tag-image)
-                - name: dockerfile
-                  value: ./tekton-argo-flux/hello/Dockerfile
-                - name: application-name
-                  value: hello-ornikar-test-interview
+      params:
+        - name: repo-url
+          value: https://github.com/franck-art/tekton-argocd-fluxcd.git
+        - name: image-reference
+          value: europe-west1-docker.pkg.dev/poc-franck/hello-tekton-image/tekton-hello
+        - name: tag-image
+          value: $(tt.params.tag-image)
+        - name: dockerfile
+          value: ./tekton-argo-flux/hello/Dockerfile
+        - name: application-name
+          value: hello-ornikar-test-interview
       workspaces:
       - name: shared-data
         volumeClaimTemplate:
