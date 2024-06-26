@@ -26,6 +26,8 @@ spec:
           value: $(tt.params.tag-image)
         - name: dockerfile
           value: ./tekton-argo-flux/hello/Dockerfile
+        - name: context
+          value: ./tekton-argo-flux/hello
         - name: application-name
           value: hello-ornikar-test-interview
       workspaces:
