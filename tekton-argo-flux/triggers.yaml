@@ -3,6 +3,9 @@ kind: TriggerTemplate
 metadata:
   name: clone-build-push-deploy-argo-trigger-template
 spec:
+  params:
+  - name: tag-image
+    description: The image tag to deploy
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun

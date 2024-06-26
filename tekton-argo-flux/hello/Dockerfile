@@ -1,4 +1,4 @@
-FROM node:19-alpine
+FROM node:20.15.0-alpine3.20
 
 WORKDIR /hello
 
@@ -7,7 +7,6 @@ ADD package.json /hello/
 ADD .editorconfig /hello/
 
 RUN yarn install
-
 
 EXPOSE  3000
 

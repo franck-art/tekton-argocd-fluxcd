@@ -11,7 +11,7 @@ metadata:
     tekton.dev/displayName: "argocd"
     tekton.dev/platforms: "linux/amd64"
     vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/role: "tekton-argocd"
+    vault.hashicorp.com/role: "argocd"
     vault.hashicorp.com/agent-inject-secret-config: "secret/data/platform/argocd"
     # Environment variable export template
     vault.hashicorp.com/agent-inject-template-config: |
@@ -55,10 +55,12 @@ spec:
     - name: login
       image: quay.io/argoproj/argocd:$(params.argocd-version)
       script: |
+        #!/bin/bash
         set -e
         source /vault/secrets/config
+        cat /vault/secrets/config
         if [ -z "$ARGOCD_AUTH_TOKEN" ]; then
-          yes | argocd login "$ARGOCD_SERVER" --username="$ARGOCD_USERNAME" --password="$ARGOCD_PASSWORD" "$(params.flags)";
+          yes | argocd login "$ARGOCD_SERVER" --username="$ARGOCD_USERNAME" --password="$ARGOCD_PASSWORD" "$(params.flags)" --grpc-web ;
         fi
         argocd app set "$(params.application-name)" --parameter image.tag="$(params.tag-image)" "$(params.flags)"
         argocd app sync "$(params.application-name)" --revision "$(params.revision)" "$(params.flags)"
