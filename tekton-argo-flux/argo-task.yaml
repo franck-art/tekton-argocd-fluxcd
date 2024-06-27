@@ -1,0 +1,67 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: argocd-task-sync-and-wait
+  labels:
+    app.kubernetes.io/version: "0.2"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Deployment
+    tekton.dev/tags: deploy
+    tekton.dev/displayName: "argocd"
+    tekton.dev/platforms: "linux/amd64"
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/role: "argocd"
+    vault.hashicorp.com/agent-inject-secret-config: "secret/data/platform/argocd"
+    # Environment variable export template
+    vault.hashicorp.com/agent-inject-template-config: |
+      {{- with secret "secret/data/platform/argocd" -}}
+        export ARGOCD_PASSWORD="{{ .Data.data.ARGOCD_PASSWORD }}"
+        export ARGOCD_USERNAME="{{ .Data.data.ARGOCD_USERNAME }}"
+        export ARGOCD_SERVER="{{ .Data.data.ARGOCD_SERVER }}"
+      {{- end }}
+spec:
+  description: >-
+    This task syncs (deploys) an Argo CD application and waits for it to be healthy.
+
+    To do so, it requires the address of the Argo CD server and some form of
+    authentication either a username/password or an authentication token.
+
+  params:
+    - name: application-name
+      description: name of the application to sync
+      type: string
+    - name: revision
+      description: the revision to sync to
+      default: HEAD
+      type: string
+    - name: tag-image
+      description: the image tag to use
+      type: string
+    - name: flags
+      default: --insecure
+      type: string
+    - name: argocd-version
+      default: v2.11.3
+      type: string
+  stepTemplate:
+    # envFrom:
+    #   - configMapRef:
+    #       name: argocd-env-configmap  # used for server address
+    #   - secretRef:
+    #       name: argocd-env-secret  # used for authentication (username/password or auth token)
+
+  steps:
+    - name: login
+      image: quay.io/argoproj/argocd:$(params.argocd-version)
+      script: |
+        #!/bin/bash
+        set -e
+        source /vault/secrets/config
+        cat /vault/secrets/config
+        if [ -z "$ARGOCD_AUTH_TOKEN" ]; then
+          yes | argocd login "$ARGOCD_SERVER" --username="$ARGOCD_USERNAME" --password="$ARGOCD_PASSWORD" "$(params.flags)" --grpc-web ;
+        fi
+        argocd app set "$(params.application-name)" --parameter image.tag="$(params.tag-image)" "$(params.flags)"
+        argocd app sync "$(params.application-name)" --revision "$(params.revision)" "$(params.flags)"
+        argocd app wait "$(params.application-name)" --health "$(params.flags)"

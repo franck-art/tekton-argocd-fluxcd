@@ -2,7 +2,10 @@ const express = require('express');
 const winston = require('winston');
 
 // Env vars
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
+const vault_hello_host = process.env.VAULT_HELLO_HOST
+const vault_hello_port = process.env.VAULT_HELLO_PORT
+
 
 // Logger
 const logger = winston.createLogger({

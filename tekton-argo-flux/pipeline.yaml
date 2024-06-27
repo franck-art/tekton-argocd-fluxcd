@@ -15,6 +15,10 @@ spec:
     type: string
   - name: dockerfile
     type: string
+  - name: context
+    type: string
+  - name: application-name
+    type: string
   workspaces:
   - name: shared-data
   - name: docker-credentials
@@ -42,3 +46,16 @@ spec:
       value: $(params.image-reference):$(params.tag-image)
     - name: DOCKERFILE
       value: $(params.dockerfile)
+    - name: CONTEXT
+      value: $(params.context)
+  - name: sync-application
+    runAfter: ["build-push"]
+    taskRef:
+        name: argocd-task-sync-and-wait
+    params:
+        - name: application-name
+          value: $(params.application-name)
+        - name: tag-image
+          value: $(params.tag-image)
+        - name: flags
+          value: --insecure # needed in this example only because the Argo CD server is locally hosted
