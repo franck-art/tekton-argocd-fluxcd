@@ -7,5 +7,3 @@ ADD . .
 RUN yarn install
 
 EXPOSE  3000
-
-CMD ["./entrypoint.sh"]
