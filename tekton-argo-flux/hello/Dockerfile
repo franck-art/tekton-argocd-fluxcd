@@ -4,7 +4,9 @@ WORKDIR /hello
 
 ADD . .
 
-RUN yarn install
+RUN yarn install 
+
+RUN chmod +x entrypoint.sh 
 
 EXPOSE  3000
 
