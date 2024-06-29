@@ -586,7 +586,6 @@ argo-cd:
             name: ''
             namespace: hello
             server: 'https://kubernetes.default.svc'
-          source: {}
           # I'm using ARGOCD MULTIPLE SOURCES ...
           # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-application-sources/
           sources:
