@@ -586,11 +586,19 @@ argo-cd:
             name: ''
             namespace: hello
             server: 'https://kubernetes.default.svc'
-          source:
-            path: cloud-interview/apps/charts/hello
-            repoURL: 'https://github.com/franck-art/ornikar-test.git'
-            targetRevision: HEAD
-          sources: []
+          source: {}
+          # I'm using ARGOCD MULTIPLE SOURCES ...
+          # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-application-sources/
+          sources:
+            - repoURL: 'https://github.com/franck-art/ornikar-test.git'
+              path: cloud-interview/apps/charts/hello
+              targetRevision: HEAD
+              helm:
+                valueFiles:
+                - $values/helm/hello-values.yaml
+            - repoURL: 'https://github.com/franck-art/tekton-argocd-fluxcd.git'
+              targetRevision: HEAD
+              ref: values
           project: default
           syncPolicy:
             automated:
