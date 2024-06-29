@@ -62,6 +62,4 @@ spec:
         if [ -z "$ARGOCD_AUTH_TOKEN" ]; then
           yes | argocd login "$ARGOCD_SERVER" --username="$ARGOCD_USERNAME" --password="$ARGOCD_PASSWORD" "$(params.flags)" --grpc-web ;
         fi
-        argocd app set "$(params.application-name)" --parameter image.tag="$(params.tag-image)" "$(params.flags)"
-        argocd app sync "$(params.application-name)" --revision "$(params.revision)" "$(params.flags)"
-        argocd app wait "$(params.application-name)" --health "$(params.flags)"
+        argocd app set "$(params.application-name)" --source-position 1 --parameter image.tag="$(params.tag-image)" "$(params.flags)"
