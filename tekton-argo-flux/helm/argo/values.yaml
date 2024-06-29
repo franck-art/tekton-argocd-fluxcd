@@ -595,7 +595,7 @@ argo-cd:
               targetRevision: HEAD
               helm:
                 valueFiles:
-                - $values/helm/hello-values.yaml
+                - $values/tekton-argo-flux/helm/hello-values.yaml
             - repoURL: 'https://github.com/franck-art/tekton-argocd-fluxcd.git'
               targetRevision: HEAD
               ref: values
